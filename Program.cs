@@ -11,7 +11,7 @@ namespace Predictium
 {
     public class ConfigurationConstants
     {
-        public const string CryptoGroundName = "Cryptoground.com";
+        public const string CryptoGroundName = "cryptoground.com";
         public const string CryptoGroundEthScrapeUrl = "https://www.cryptoground.com/ethereum-price-prediction";
         public const string CryptoGroundDotScrapeUrl = "https://www.cryptoground.com/polkadot-price-prediction";
         public const string CryptoGroundBtcScrapeUrl = "https://www.cryptoground.com/bitcoin-price-prediction";
@@ -19,7 +19,10 @@ namespace Predictium
         public const string ThirtyRatesEthScrapeUrl = "http://30rates.com/ethereum-price-prediction-tomorrow-week-month-eth-forecast";
         public const string ThirtyRatesDotScrapeUrl = "http://30rates.com/polkadot";
         public const string ThirtyRatesBtcScrapeUrl = "http://30rates.com/btc-to-usd-forecast-today-dollar-to-bitcoin";
-
+        public const string WalletInvestorName = "walletinvestor.com";
+        public const string WalletInvestorEthScrapeUrl = "https://walletinvestor.com/forecast/ethereum-prediction";
+        public const string WalletInvestorDotScrapeUrl = "https://walletinvestor.com/forecast/polkadot-prediction";
+        public const string WalletInvestorBtcScrapeUrl = "https://walletinvestor.com/forecast/bitcoin-prediction";
     }
     class Program
     {
@@ -41,6 +44,14 @@ namespace Predictium
                 { CryptoCurrencyType.DOT, ConfigurationConstants.ThirtyRatesDotScrapeUrl },
                 { CryptoCurrencyType.BTC, ConfigurationConstants.ThirtyRatesBtcScrapeUrl }
             }});
+
+            var wi = new WalletInvestorDotCom(new ScrapePredictorConfiguration { ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
+            {
+                { CryptoCurrencyType.ETH, ConfigurationConstants.WalletInvestorEthScrapeUrl },
+                { CryptoCurrencyType.DOT, ConfigurationConstants.WalletInvestorDotScrapeUrl },
+                { CryptoCurrencyType.BTC, ConfigurationConstants.WalletInvestorBtcScrapeUrl }
+            }});
+
             var reality = new BinanceRealityMonitor();
 
             var resultCgEth = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
@@ -49,6 +60,10 @@ namespace Predictium
             var resultTrEth = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
             var resultTrBtc = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
             var resultTrDot = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
+            var resultWiEth = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
+            var resultWiBtc = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
+            var resultWiDot = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
+            
             var resultReality = await reality.GetPriceNowAsync(CryptoCurrencyType.ETH);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
@@ -63,6 +78,12 @@ namespace Predictium
             Console.WriteLine(JsonSerializer.Serialize(resultTrBtc, options));
             Console.WriteLine("----------------------------");
             Console.WriteLine(JsonSerializer.Serialize(resultTrDot, options));
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(JsonSerializer.Serialize(resultWiEth, options));
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(JsonSerializer.Serialize(resultWiBtc, options));
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(JsonSerializer.Serialize(resultWiDot, options));
             Console.WriteLine("----------------------------");
             Console.WriteLine(JsonSerializer.Serialize(resultReality, options));
         }
