@@ -1,5 +1,6 @@
 ﻿using Predictium.Configuration;
 using Predictium.Models;
+using Predictium.Output.Sheets;
 using Predictium.Predictors.Scraped;
 using Predictium.Reality;
 using System;
@@ -32,60 +33,64 @@ namespace Predictium
         }
         static async Task MainAsync(string[] args)
         {
-            var cg = new CryptoGroundDotCom(new ScrapePredictorConfiguration { ScrapeUrls =  
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.CryptoGroundEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.CryptoGroundDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.CryptoGroundBtcScrapeUrl }
-            }});
-            var tr = new ThirtyRatesDotCom(new ScrapePredictorConfiguration { ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.ThirtyRatesEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.ThirtyRatesDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.ThirtyRatesBtcScrapeUrl }
-            }});
+            //var cg = new CryptoGroundDotCom(new ScrapePredictorConfiguration { ScrapeUrls =  
+            //{
+            //    { CryptoCurrencyType.ETH, ConfigurationConstants.CryptoGroundEthScrapeUrl },
+            //    { CryptoCurrencyType.DOT, ConfigurationConstants.CryptoGroundDotScrapeUrl },
+            //    { CryptoCurrencyType.BTC, ConfigurationConstants.CryptoGroundBtcScrapeUrl }
+            //}});
+            //var tr = new ThirtyRatesDotCom(new ScrapePredictorConfiguration { ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
+            //{
+            //    { CryptoCurrencyType.ETH, ConfigurationConstants.ThirtyRatesEthScrapeUrl },
+            //    { CryptoCurrencyType.DOT, ConfigurationConstants.ThirtyRatesDotScrapeUrl },
+            //    { CryptoCurrencyType.BTC, ConfigurationConstants.ThirtyRatesBtcScrapeUrl }
+            //}});
 
-            var wi = new WalletInvestorDotCom(new ScrapePredictorConfiguration { ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.WalletInvestorEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.WalletInvestorDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.WalletInvestorBtcScrapeUrl }
-            }});
+            //var wi = new WalletInvestorDotCom(new ScrapePredictorConfiguration { ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
+            //{
+            //    { CryptoCurrencyType.ETH, ConfigurationConstants.WalletInvestorEthScrapeUrl },
+            //    { CryptoCurrencyType.DOT, ConfigurationConstants.WalletInvestorDotScrapeUrl },
+            //    { CryptoCurrencyType.BTC, ConfigurationConstants.WalletInvestorBtcScrapeUrl }
+            //}});
 
-            var reality = new BinanceRealityMonitor();
+            //var reality = new BinanceRealityMonitor();
 
-            var resultCgEth = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
-            var resultCgBtc = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
-            var resultCgDot = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
-            var resultTrEth = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
-            var resultTrBtc = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
-            var resultTrDot = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
-            var resultWiEth = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
-            var resultWiBtc = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
-            var resultWiDot = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
-            
-            var resultReality = await reality.GetPriceNowAsync(CryptoCurrencyType.ETH);
+            //var resultCgEth = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
+            //var resultCgBtc = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
+            //var resultCgDot = await cg.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
+            //var resultTrEth = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
+            //var resultTrBtc = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
+            //var resultTrDot = await tr.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
+            //var resultWiEth = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.ETH);
+            //var resultWiBtc = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.BTC);
+            //var resultWiDot = await wi.GetTommorowPredictionAsync(CryptoCurrencyType.DOT);
 
-            var options = new JsonSerializerOptions { WriteIndented = true };
-            Console.WriteLine(JsonSerializer.Serialize(resultCgEth, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultCgBtc, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultCgDot, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultTrEth, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultTrBtc, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultTrDot, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultWiEth, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultWiBtc, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultWiDot, options));
-            Console.WriteLine("----------------------------");
-            Console.WriteLine(JsonSerializer.Serialize(resultReality, options));
+            //var resultReality = await reality.GetPriceNowAsync(CryptoCurrencyType.ETH);
+
+            //var options = new JsonSerializerOptions { WriteIndented = true };
+            //Console.WriteLine(JsonSerializer.Serialize(resultCgEth, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultCgBtc, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultCgDot, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultTrEth, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultTrBtc, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultTrDot, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultWiEth, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultWiBtc, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultWiDot, options));
+            //Console.WriteLine("----------------------------");
+            //Console.WriteLine(JsonSerializer.Serialize(resultReality, options));
+
+            var output = new SheetsOutput();
+            await output.InitializeAsync();
+            await output.Output(null);
         }
     }
 }
