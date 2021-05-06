@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Predictium.Models
 {
-    public enum CurrencyType
+    public enum CryptoCurrencyType
     {
         ETH,
         BTC

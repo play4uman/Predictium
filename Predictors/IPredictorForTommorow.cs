@@ -8,6 +8,6 @@ namespace Predictium.Predictors
 {
     public interface IPredictorForTommorow : IPredictor
     {
-        Task<PredictionModel> GetTommorowPrediction(CurrencyType currencyType);
+        Task<PredictionModel> GetTommorowPredictionAsync(CryptoCurrencyType currencyType);
     }
 }

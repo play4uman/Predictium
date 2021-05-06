@@ -15,8 +15,20 @@ namespace Predictium.Predictors.Scraped
             this.Configuration = configuration;
         }
         public abstract string Name { get; }
-        public abstract string ScrapePattern { get; }
+        public abstract string ScrapeEthPattern { get; }
         public TConfiguration Configuration { get; set; }
-        public abstract Task<PredictionModel> GetTommorowPrediction(CurrencyType currencyType);
+        public virtual string FiatCurrencyCode { get => "USD"; } 
+        public virtual async Task<PredictionModel> GetTommorowPredictionAsync(CryptoCurrencyType currencyType)
+        {
+            return currencyType switch
+            {
+                CryptoCurrencyType.ETH => await GetTommorowEthPredictionAsync(),
+                CryptoCurrencyType.BTC => await GetTommorowBtcPredictionAsync(),
+                _ => throw new Exception("Unknown currency type")
+            };
+        }
+
+        protected abstract Task<PredictionModel> GetTommorowEthPredictionAsync();
+        protected abstract Task<PredictionModel> GetTommorowBtcPredictionAsync();
     }
 }

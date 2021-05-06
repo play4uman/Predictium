@@ -18,24 +18,15 @@ namespace Predictium.Predictors.Scraped
 
         public override string Name => ConfigurationConstants.CryptoGroundName;
 
-        public override string ScrapePattern => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>";
+        public override string ScrapeEthPattern => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>";
 
-        public async override Task<PredictionModel> GetTommorowPrediction(CurrencyType currency)
-        {
-            return currency switch
-            {
-                CurrencyType.ETH => await GetTommorowEthPrediction(),
-                CurrencyType.BTC => throw new NotImplementedException(),
-                _ => throw new Exception("Unknown currency type")
-            };
-        }
 
-        private async Task<PredictionModel> GetTommorowEthPrediction()
+        protected override async Task<PredictionModel> GetTommorowEthPredictionAsync()
         {
-            var httpClient = new HttpClient();
+            using var httpClient = new HttpClient();
             var response = await httpClient.GetAsync(Configuration.ScrapeEthUrl);
             var html = await response.Content.ReadAsStringAsync();
-            var regex = new Regex(ScrapePattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            var regex = new Regex(ScrapeEthPattern, RegexOptions.Singleline | RegexOptions.Compiled);
             var match = regex.Match(html);
 
             if (!match.Success)
@@ -46,14 +37,18 @@ namespace Predictium.Predictors.Scraped
 
             var result = new PredictionModel
             {
-                Currency = CurrencyType.ETH,
+                CryptoCurrencyCode = CryptoCurrencyType.ETH.ToString(),
                 Author = this,
                 AveragePrice = tommorowPricePrediction,
                 ChangePercent = tommorowPercentPrediction,
-                Date = DateTime.Now.AddDays(1)
+                Date = DateTime.Now.AddDays(1),
+                FiatCurrencyCode = this.FiatCurrencyCode
             };
 
             return result;
         }
+
+        protected override async Task<PredictionModel> GetTommorowBtcPredictionAsync() =>
+            throw new NotImplementedException();
     }
 }
