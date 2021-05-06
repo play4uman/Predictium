@@ -20,22 +20,42 @@ namespace Predictium.Predictors.Scraped
         public override string Name => ConfigurationConstants.ThirtyRatesName;
 
         private static string TommorowFormattedString => DateTime.Now.AddDays(1).ToString("MM/dd", CultureInfo.InvariantCulture).Replace("/", @"\/");
-        public override string ScrapeEthPattern => @$"<td style=\""[^>]*\"">{TommorowFormattedString}<\/td>\s+<td style=\""[^>]*\"">.*?<\/td>\s+<td style=\""[^>]*\"">.(.*?)</td>";
-        private const string TodayPriceEthPattern = @"Ethereum price stood at <strong>(.*?)</strong>";
+        private const string TodayPricePattern = @"{0} price stood at <strong>(.*?)</strong>";
+
+        protected override string GetScrapePattern(CryptoCurrencyType cryptoCurrencyType)
+        {
+            return cryptoCurrencyType switch
+            {
+                CryptoCurrencyType.ETH => @$"<td style=\""[^>]*\"">{TommorowFormattedString}<\/td>\s+<td style=\""[^>]*\"">.*?<\/td>\s+<td style=\""[^>]*\"">.(.*?)</td>",
+                CryptoCurrencyType.BTC => @$"<td style=\""[^>]*\"">{TommorowFormattedString}<\/td>\s+<td style=\""[^>]*\"">.*?<\/td>\s+<td style=\""[^>]*\"">.(.*?)</td>",
+                CryptoCurrencyType.DOT => @$"<td style=\""[^>]*\"">{TommorowFormattedString}<\/td>\s+<td style=\""[^>]*\"">.*?<\/td>\s+<td style=\""[^>]*\"">.(.*?)</td>",
+                _ => throw new Exception("Unknown Crypto Currency type")
+            };
+        }
 
         protected override async Task<PredictionModel> GetTommorowEthPredictionAsync()
+            => await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.ETH);
+
+        protected override async Task<PredictionModel> GetTommorowBtcPredictionAsync()
+            => await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.BTC);
+
+        protected override async Task<PredictionModel> GetTommorowDotPredictionAsync()
+            => await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.DOT);
+
+        private async Task<PredictionModel> GetGeneralTommorowPredictionAsync(CryptoCurrencyType cryptoCurrencyType)
         {
             using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(Configuration.ScrapeEthUrl);
+            var response = await httpClient.GetAsync(Configuration.ScrapeUrls[cryptoCurrencyType]);
             var html = await response.Content.ReadAsStringAsync();
+            var scrapePattern = GetScrapePattern(cryptoCurrencyType);
 
-            var regex = new Regex(ScrapeEthPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            var regex = new Regex(scrapePattern, RegexOptions.Singleline | RegexOptions.Compiled);
             var match = regex.Match(html);
             if (!match.Success)
                 throw new ScrapeException(Name);
 
-            double tommorowPrice = double.Parse(match.Groups[1].Value.Trim());
-            double todayPrice = GetTodayEthPrice(html);
+            double tommorowPrice = double.Parse(match.Groups[1].Value.Trim(), CultureInfo.InvariantCulture);
+            double todayPrice = GetTodayPrice(html, cryptoCurrencyType);
             double tommorowPercent = (tommorowPrice / (todayPrice / 100)) - 100;
 
             return new PredictionModel
@@ -43,20 +63,17 @@ namespace Predictium.Predictors.Scraped
                 Author = this,
                 AveragePrice = tommorowPrice,
                 ChangePercent = tommorowPercent,
-                CryptoCurrencyCode = CryptoCurrencyType.ETH.ToString(),
+                CryptoCurrencyCode = cryptoCurrencyType.ToString(),
                 Date = DateTime.Now.AddDays(1),
                 FiatCurrencyCode = this.FiatCurrencyCode
             };
         }
 
-        protected override Task<PredictionModel> GetTommorowBtcPredictionAsync()
+        private double GetTodayPrice(string html, CryptoCurrencyType cryptoCurrencyType)
         {
-            throw new NotImplementedException();
-        }
-
-        private double GetTodayEthPrice(string html)
-        {
-            var regex = new Regex(TodayPriceEthPattern);
+            var todayPricePatternForCrypto = string.Format(TodayPricePattern, 
+                CryptoCurrencyFullName.GetCryptoCurrencyNameByType(cryptoCurrencyType));
+            var regex = new Regex(todayPricePatternForCrypto);
             var match = regex.Match(html);
             if (!match.Success)
                 throw new ScrapeException(Name);

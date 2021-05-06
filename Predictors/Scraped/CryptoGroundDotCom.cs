@@ -18,15 +18,33 @@ namespace Predictium.Predictors.Scraped
 
         public override string Name => ConfigurationConstants.CryptoGroundName;
 
-        public override string ScrapeEthPattern => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>";
+        protected override string GetScrapePattern(CryptoCurrencyType cryptoCurrencyType)
+        {
+            return cryptoCurrencyType switch
+            {
+                CryptoCurrencyType.ETH => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>",
+                CryptoCurrencyType.DOT => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>",
+                CryptoCurrencyType.BTC => @"<td class=""currency"">\s+1 day\s+<\/td>\s+<td class=\""(price up|price down)\"">\s+\$(.*?)<\/td>\s+<td class=\""(price up|price down)\"">\s+(.*?)\s+<\/td>",
+                _ => throw new Exception("Unknown cyptocurrency type")
+            };
+        }
+
+        protected override async Task<PredictionModel> GetTommorowEthPredictionAsync() =>
+            await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.ETH);
+
+        protected override async Task<PredictionModel> GetTommorowBtcPredictionAsync() =>
+            await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.BTC);
+
+        protected override async Task<PredictionModel> GetTommorowDotPredictionAsync() =>
+            await GetGeneralTommorowPredictionAsync(CryptoCurrencyType.DOT);
 
 
-        protected override async Task<PredictionModel> GetTommorowEthPredictionAsync()
+        private async Task<PredictionModel> GetGeneralTommorowPredictionAsync(CryptoCurrencyType cryptoCurrencyType)
         {
             using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(Configuration.ScrapeEthUrl);
+            var response = await httpClient.GetAsync(Configuration.ScrapeUrls[cryptoCurrencyType]);
             var html = await response.Content.ReadAsStringAsync();
-            var regex = new Regex(ScrapeEthPattern, RegexOptions.Singleline | RegexOptions.Compiled);
+            var regex = new Regex(GetScrapePattern(cryptoCurrencyType), RegexOptions.Singleline | RegexOptions.Compiled);
             var match = regex.Match(html);
 
             if (!match.Success)
@@ -37,7 +55,7 @@ namespace Predictium.Predictors.Scraped
 
             var result = new PredictionModel
             {
-                CryptoCurrencyCode = CryptoCurrencyType.ETH.ToString(),
+                CryptoCurrencyCode = cryptoCurrencyType.ToString(),
                 Author = this,
                 AveragePrice = tommorowPricePrediction,
                 ChangePercent = tommorowPercentPrediction,
@@ -47,8 +65,5 @@ namespace Predictium.Predictors.Scraped
 
             return result;
         }
-
-        protected override async Task<PredictionModel> GetTommorowBtcPredictionAsync() =>
-            throw new NotImplementedException();
     }
 }
