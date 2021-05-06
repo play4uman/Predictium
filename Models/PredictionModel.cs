@@ -13,5 +13,6 @@ namespace Predictium.Models
         public double AveragePrice { get; set; }
         public double ChangePercent{ get; set; }
         public string FiatCurrencyCode { get; set; }
+        public bool IsFuture { get; set; } = true;
     }
 }

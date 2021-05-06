@@ -1,5 +1,6 @@
-﻿using Predictium.Cofiguration;
+﻿using Predictium.Configuration;
 using Predictium.Predictors.Scraped;
+using Predictium.Reality;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -25,13 +26,18 @@ namespace Predictium
         {
             var cg = new CryptoGroundDotCom(new ScrapePredictorConfiguration { ScrapeEthUrl = ConfigurationConstants.CryptoGroundEthScrapeUrl });
             var tr = new ThirtyRatesDotCom(new ScrapePredictorConfiguration { ScrapeEthUrl = ConfigurationConstants.ThirtyRatesEthScrapeUrl });
+            var reality = new BinanceRealityMonitor();
+
             var resultCg = await cg.GetTommorowPredictionAsync(Models.CryptoCurrencyType.ETH);
             var resultTr = await tr.GetTommorowPredictionAsync(Models.CryptoCurrencyType.ETH);
+            var resultReality = await reality.GetPriceNowAsync(Models.CryptoCurrencyType.ETH);
 
             var options = new JsonSerializerOptions { WriteIndented = true };
             Console.WriteLine(JsonSerializer.Serialize(resultCg, options));
             Console.WriteLine("----------------------------");
             Console.WriteLine(JsonSerializer.Serialize(resultTr, options));
+            Console.WriteLine("----------------------------");
+            Console.WriteLine(JsonSerializer.Serialize(resultReality, options));
         }
     }
 }

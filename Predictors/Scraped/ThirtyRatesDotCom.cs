@@ -1,4 +1,4 @@
-﻿using Predictium.Cofiguration;
+﻿using Predictium.Configuration;
 using Predictium.Models;
 using System;
 using System.Collections.Generic;
