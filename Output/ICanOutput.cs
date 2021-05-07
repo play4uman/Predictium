@@ -9,6 +9,6 @@ namespace Predictium.Output
 {
     public interface ICanOutput
     {
-        public Task Output(IEnumerable<PredictionModel> predictionModels); 
+        public Task Output(IList<PredictionModel> predictionModels); 
     }
 }
