@@ -44,7 +44,7 @@ namespace Predictium.Predictors.Scraped
         private async Task<PredictionModel> GetGeneralTommorowPredictionAsync(CryptoCurrencyType cryptoCurrencyType)
         {
             using var httpClient = new HttpClient();
-            string url = Configuration.ScrapeUrls[cryptoCurrencyType];
+            string url = Configuration.ScrapeURLs[cryptoCurrencyType];
             var response = await httpClient.GetAsync(url);
 
             var html = await response.Content.ReadAsStringAsync();
