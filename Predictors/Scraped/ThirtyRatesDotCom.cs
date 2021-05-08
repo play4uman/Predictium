@@ -19,7 +19,10 @@ namespace Predictium.Predictors.Scraped
 
         public override string Name => ConfigurationConstants.ThirtyRatesName;
 
-        private static string TommorowFormattedString => DateTime.Now.AddDays(1).ToString("MM/dd", CultureInfo.InvariantCulture).Replace("/", @"\/");
+        private string TommorowFormattedString =>
+            DateTime.Now.AddDays(Configuration.EarliestPredictionAvailableAfterDays)
+            .ToString("MM/dd", CultureInfo.InvariantCulture).Replace("/", @"\/");
+
         private const string TodayPricePattern = @"{0} price stood at <strong>(.*?)</strong>";
 
         protected override string GetScrapePattern(CryptoCurrencyType cryptoCurrencyType)
@@ -64,7 +67,7 @@ namespace Predictium.Predictors.Scraped
                 AveragePrice = tommorowPrice,
                 ChangePercent = tommorowPercent,
                 CryptoCurrencyCode = cryptoCurrencyType.ToString(),
-                Date = DateTime.Now.AddDays(1),
+                Date = DateTime.Now.AddDays(Configuration.EarliestPredictionAvailableAfterDays),
                 FiatCurrencyCode = this.FiatCurrencyCode
             };
         }

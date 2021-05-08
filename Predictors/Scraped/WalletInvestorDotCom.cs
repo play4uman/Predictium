@@ -64,7 +64,7 @@ namespace Predictium.Predictors.Scraped
                 AveragePrice = tommorowPrice,
                 ChangePercent = tommorowPercent,
                 CryptoCurrencyCode = cryptoCurrencyType.ToString(),
-                Date = DateTime.Now.AddDays(1),
+                Date = DateTime.Now.AddDays(Configuration.EarliestPredictionAvailableAfterDays),
                 FiatCurrencyCode = FiatCurrencyCode
             };
         }

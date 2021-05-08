@@ -36,30 +36,31 @@ namespace Predictium
             var cg = new CryptoGroundDotCom(new ScrapePredictorConfiguration
             {
                 ScrapeUrls =
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.CryptoGroundEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.CryptoGroundDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.CryptoGroundBtcScrapeUrl }
-            }
+                {
+                    { CryptoCurrencyType.DOT, ConfigurationConstants.CryptoGroundDotScrapeUrl },
+                    { CryptoCurrencyType.BTC, ConfigurationConstants.CryptoGroundBtcScrapeUrl },
+                    { CryptoCurrencyType.ETH, ConfigurationConstants.CryptoGroundEthScrapeUrl },
+                }
             });
             var tr = new ThirtyRatesDotCom(new ScrapePredictorConfiguration
             {
                 ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.ThirtyRatesEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.ThirtyRatesDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.ThirtyRatesBtcScrapeUrl }
-            }
+                {
+                    { CryptoCurrencyType.ETH, ConfigurationConstants.ThirtyRatesEthScrapeUrl },
+                    { CryptoCurrencyType.DOT, ConfigurationConstants.ThirtyRatesDotScrapeUrl },
+                    { CryptoCurrencyType.BTC, ConfigurationConstants.ThirtyRatesBtcScrapeUrl }
+                },
+                EarliestPredictionAvailableAfterDays = 2
             });
 
             var wi = new WalletInvestorDotCom(new ScrapePredictorConfiguration
             {
                 ScrapeUrls = new Dictionary<Models.CryptoCurrencyType, string>
-            {
-                { CryptoCurrencyType.ETH, ConfigurationConstants.WalletInvestorEthScrapeUrl },
-                { CryptoCurrencyType.DOT, ConfigurationConstants.WalletInvestorDotScrapeUrl },
-                { CryptoCurrencyType.BTC, ConfigurationConstants.WalletInvestorBtcScrapeUrl }
-            }
+                {
+                    { CryptoCurrencyType.ETH, ConfigurationConstants.WalletInvestorEthScrapeUrl },
+                    { CryptoCurrencyType.DOT, ConfigurationConstants.WalletInvestorDotScrapeUrl },
+                    { CryptoCurrencyType.BTC, ConfigurationConstants.WalletInvestorBtcScrapeUrl }
+                }
             });
 
             var reality = new BinanceRealityMonitor();
@@ -77,7 +78,7 @@ namespace Predictium
             var resultReality = await reality.GetPriceNowAsync(CryptoCurrencyType.ETH);
 
             var results = new[] { resultCgEth, resultCgBtc, resultCgDot, resultTrBtc, resultTrEth,
-                resultTrDot, resultWiEth, resultWiBtc, resultWiDot };
+                resultTrDot, resultWiEth, resultWiBtc, resultWiDot,/* resultReality*/ };
 
             var output = new SheetsOutput();
             await output.InitializeAsync();

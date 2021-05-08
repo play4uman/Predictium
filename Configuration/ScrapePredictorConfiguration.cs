@@ -8,5 +8,6 @@ namespace Predictium.Configuration
     public class ScrapePredictorConfiguration
     {
         public Dictionary<CryptoCurrencyType, string> ScrapeUrls { get; set; } = new Dictionary<CryptoCurrencyType, string>();
+        public int EarliestPredictionAvailableAfterDays { get; set; } = 1;
     }
 }

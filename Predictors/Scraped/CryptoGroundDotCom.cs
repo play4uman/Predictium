@@ -59,7 +59,7 @@ namespace Predictium.Predictors.Scraped
                 Author = this,
                 AveragePrice = tommorowPricePrediction,
                 ChangePercent = tommorowPercentPrediction,
-                Date = DateTime.Now.AddDays(1),
+                Date = DateTime.Now.AddDays(Configuration.EarliestPredictionAvailableAfterDays),
                 FiatCurrencyCode = this.FiatCurrencyCode
             };
 
